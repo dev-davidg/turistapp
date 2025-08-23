@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#004d40" />
+<link rel="manifest" href="manifest.json" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .card-hover { transition: transform .15s ease, box-shadow .15s ease }
+  .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.08) }
+  ::-webkit-scrollbar { width: 8px; height: 8px }
+  ::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,.3); border-radius: 4px }
+</style><title>HikeSK – Eventy</title></head>
+  <body data-page="events" class="bg-stone-50 text-gray-900">
+    <nav class="bg-green-900/90 backdrop-blur text-white p-4 flex justify-between items-center sticky top-0 z-50">
+  <div class="text-lg font-bold flex items-center gap-2">🏔️ HikeSK</div>
+  <div class="space-x-4 text-sm">
+    <a href="index.html" class="hover:underline">🏠 Domov</a>
+    <a href="events.html" class="hover:underline">📅 Eventy</a>
+    <a href="challenge.html" class="hover:underline">⭐ Výzvy</a>
+    <a href="profile.html" class="hover:underline">🙍‍♂️ Profil</a>
+    <button id="logoutBtn" class="ml-2 px-2 py-1 rounded bg-red-600 hover:bg-red-700 text-sm">🚪 Odhlásiť</button>
+  </div>
+</nav>
+    <main class="p-4 space-y-6 max-w-3xl mx-auto">
+      <h1 class="text-2xl font-semibold">📅 Eventy</h1>
+      <div id="eventsList" class="space-y-4"></div>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>

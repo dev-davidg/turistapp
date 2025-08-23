@@ -1,0 +1,18 @@
+[
+  {
+    "id": "e1",
+    "name": "Spoločný výstup na Kriváň",
+    "address": "Štrbské Pleso",
+    "dateTime": "2025-09-01T07:30:00",
+    "lat": 49.118,
+    "lon": 20.062
+  },
+  {
+    "id": "e2",
+    "name": "Nočný výšľap na Rysy",
+    "address": "Popradské Pleso",
+    "dateTime": "2025-09-15T03:50:00",
+    "lat": 49.157,
+    "lon": 20.071
+  }
+]

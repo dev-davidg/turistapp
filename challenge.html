@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#004d40" />
+<link rel="manifest" href="manifest.json" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .card-hover { transition: transform .15s ease, box-shadow .15s ease }
+  .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.08) }
+  ::-webkit-scrollbar { width: 8px; height: 8px }
+  ::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,.3); border-radius: 4px }
+</style><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/><title>HikeSK – Výzva</title></head>
+  <body data-page="challenge" class="bg-stone-50 text-gray-900">
+    <nav class="bg-green-900/90 backdrop-blur text-white p-4 flex justify-between items-center sticky top-0 z-50">
+  <div class="text-lg font-bold flex items-center gap-2">🏔️ HikeSK</div>
+  <div class="space-x-4 text-sm">
+    <a href="index.html" class="hover:underline">🏠 Domov</a>
+    <a href="events.html" class="hover:underline">📅 Eventy</a>
+    <a href="challenge.html" class="hover:underline">⭐ Výzvy</a>
+    <a href="profile.html" class="hover:underline">🙍‍♂️ Profil</a>
+    <button id="logoutBtn" class="ml-2 px-2 py-1 rounded bg-red-600 hover:bg-red-700 text-sm">🚪 Odhlásiť</button>
+  </div>
+</nav>
+    <main class="p-4 space-y-4 max-w-3xl mx-auto">
+      <h1 id="challengeTitle" class="text-2xl font-semibold">🏔️ Výzva</h1>
+      <p id="challengeDesc" class="text-gray-600"></p>
+      <div class="flex gap-2" id="chips"></div>
+      <div class="h-2 bg-stone-200 rounded-full overflow-hidden"><div id="progressBar" class="bg-green-600 h-2" style="width:0%"></div></div>
+      <p id="progressText" class="text-xs text-gray-500"></p>
+      <h2 class="text-lg font-semibold mt-4">🧭 Mapa / 📍 Checkpointy</h2>
+      <div id="map" class="h-64 w-full rounded border"></div>
+      <ul id="itemsList" class="list-disc pl-5"></ul>
+    </main>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

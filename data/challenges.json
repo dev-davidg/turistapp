@@ -1,0 +1,57 @@
+[
+  {
+    "id": "1",
+    "title": "4 Tatranské štíty 2025",
+    "description": "Počas roka 2025 vystúp na 4 tatranské štíty.",
+    "peaks": [
+      {
+        "name": "Rysy",
+        "lat": 49.1798,
+        "lon": 20.0886
+      },
+      {
+        "name": "Lomnický štít",
+        "lat": 49.1953,
+        "lon": 20.2189
+      },
+      {
+        "name": "Kriváň",
+        "lat": 49.1647,
+        "lon": 19.9992
+      },
+      {
+        "name": "Gerlachovský štít",
+        "lat": 49.1667,
+        "lon": 20.1333
+      }
+    ]
+  },
+  {
+    "id": "snp",
+    "title": "Cesta hrdinov SNP",
+    "description": "Viacdňový prechod s checkpointmi naprieč Slovenskom.",
+    "multiDay": true,
+    "checkpoints": [
+      {
+        "name": "Devín",
+        "lat": 48.173,
+        "lon": 16.978
+      },
+      {
+        "name": "Donovaly",
+        "lat": 48.88,
+        "lon": 19.235
+      },
+      {
+        "name": "Šumiac",
+        "lat": 48.865,
+        "lon": 20.175
+      },
+      {
+        "name": "Dukla",
+        "lat": 49.433,
+        "lon": 21.683
+      }
+    ]
+  }
+]
