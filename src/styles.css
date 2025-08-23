@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* baseline */
+:root { color-scheme: light dark; }
+html, body, #root { height: 100%; }
+::selection { background: rgba(16,185,129,0.15); }
