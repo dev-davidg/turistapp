@@ -108,7 +108,6 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"events" | "challenges">("events");
   const [loadingE, setLoadingE] = useState(true);
   const [events, setEvents] = useState<EventRow[]>(fallbackEvents);
-
   const [loadingC, setLoadingC] = useState(true);
   const [challenges, setChallenges] = useState<ChallengeRow[]>(fallbackChallenges);
 
@@ -167,7 +166,12 @@ export default function Home() {
           <div className="hidden items-center gap-3 md:flex">
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Hľadaj eventy a výzvy" className="w-80 rounded-xl border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Hľadaj eventy a výzvy"
+                className="w-80 rounded-xl border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+              />
             </div>
             <Button variant="outline" className="px-3 py-2"><User className="mr-2 h-4 w-4" /> Profil</Button>
           </div>
@@ -177,7 +181,11 @@ export default function Home() {
 
       <main className="mx-auto max-w-7xl px-4 py-6">
         <div className="mb-4 flex items-center justify-between">
-          <UITabs tabs={[{value:"events",label:"Eventy"},{value:"challenges",label:"Výzvy"}]} value={activeTab} onChange={setActiveTab} />
+          <UITabs
+            tabs={[{ value:"events", label:"Eventy" }, { value:"challenges", label:"Výzvy" }]}
+            value={activeTab}
+            onChange={setActiveTab}
+          />
         </div>
 
         <AnimatePresence mode="popLayout">
@@ -207,3 +215,21 @@ export default function Home() {
                   {Array.from({ length: 6 }).map((_, i) => (
                     <Card key={i} className="h-64 animate-pulse bg-gray-100 dark:bg-gray-900" />
                   ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                  {filteredChallenges.map((c) => (<ChallengeCard key={c.id} c={c} />))}
+                  {filteredChallenges.length === 0 && (
+                    <Card className="p-6 text-center text-sm text-gray-600 dark:text-gray-300">
+                      Žiadne výzvy pre dané filtrovanie.
+                    </Card>
+                  )}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
+    </div>
+  );
+}
