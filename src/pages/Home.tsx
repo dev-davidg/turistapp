@@ -12,7 +12,7 @@ type EventRow = {
   location: string;
   image?: string;
   tags?: string[];
-  spotsLeft?: number;
+  spotsLeft?: number; // camelCase v UI
 };
 
 type ChallengeRow = {
@@ -121,7 +121,8 @@ export default function Home() {
       setLoadingE(true);
       const { data, error } = await supabase
         .from("events")
-        .select("id,title,date,location,image,tags,spotsLeft")
+        // alias: spotsLeft (UI) <- spotsleft (DB)
+        .select("id,title,date,location,image,tags,spotsLeft:spotsleft")
         .order("date", { ascending: true })
         .limit(20);
       if (error) setSrcErr(`fetch-error: ${error.message}`);
