@@ -1,11 +1,10 @@
+cat > src/pages/Home.tsx << 'EOF'
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, MapPin, Search, User, CheckCircle2, ChevronRight } from "lucide-react";
 import { UIButton as Button, UICard as Card, UIBadge as Badge, UITabs } from "@/ui/kit";
 import { supabase } from "@/lib/supabase";
-import React, { useEffect, useMemo, useState } from "react";
-
 
 type EventRow = {
   id: string;
@@ -37,7 +36,8 @@ const fallbackChallenges: ChallengeRow[] = [
   { id:"c2", title:"3 hrady za víkend", points:200, difficulty:"stredná", image:"https://images.unsplash.com/photo-1520986606214-8b456906c813?q=80&w=1200&auto=format&fit=crop", tags:["Objavovanie","História"] },
 ];
 
-const formatDateSk = (iso: string) => new Date(iso).toLocaleDateString("sk-SK", { day: "2-digit", month: "long", year: "numeric" });
+const formatDateSk = (iso: string) =>
+  new Date(iso).toLocaleDateString("sk-SK", { day: "2-digit", month: "long", year: "numeric" });
 
 const EventCard = ({ e }: { e: EventRow }) => {
   const [joined, setJoined] = useState(false);
@@ -105,27 +105,6 @@ const ChallengeCard = ({ c }: { c: ChallengeRow }) => (
   </motion.div>
 );
 
-const [srcErr, setSrcErr] = useState<string | null>(null);
-
-// EVENTS
-useEffect(() => {
-  let isMounted = true;
-  (async () => {
-    if (!supabase) { setSrcErr("no-supabase"); setLoadingE(false); return; }
-    setLoadingE(true);
-    const { data, error } = await supabase
-      .from("events")
-      .select("id,title,date,location,image,tags,spotsLeft")
-      .order("date", { ascending: true })
-      .limit(20);
-    if (error) setSrcErr(error.message);
-    if (!error && data && isMounted) setEvents(data as EventRow[]);
-    setLoadingE(false);
-  })();
-  return () => { isMounted = false; };
-}, []);
-
-
 export default function Home() {
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"events" | "challenges">("events");
@@ -133,18 +112,20 @@ export default function Home() {
   const [events, setEvents] = useState<EventRow[]>(fallbackEvents);
   const [loadingC, setLoadingC] = useState(true);
   const [challenges, setChallenges] = useState<ChallengeRow[]>(fallbackChallenges);
+  const [srcErr, setSrcErr] = useState<string | null>(null);
 
   // EVENTS
   useEffect(() => {
     let isMounted = true;
     (async () => {
-      if (!supabase) { setLoadingE(false); return; }
+      if (!supabase) { setSrcErr("no-supabase"); setLoadingE(false); return; }
       setLoadingE(true);
       const { data, error } = await supabase
         .from("events")
         .select("id,title,date,location,image,tags,spotsLeft")
         .order("date", { ascending: true })
-        .limit(12);
+        .limit(20);
+      if (error) setSrcErr(error.message);
       if (!error && data && isMounted) setEvents(data as EventRow[]);
       setLoadingE(false);
     })();
@@ -161,7 +142,7 @@ export default function Home() {
         .from("challenges")
         .select("id,title,points,difficulty,image,tags")
         .order("points", { ascending: false })
-        .limit(12);
+        .limit(20);
       if (!error && data && isMounted) setChallenges(data as ChallengeRow[]);
       setLoadingC(false);
     })();
@@ -202,10 +183,10 @@ export default function Home() {
         </div>
       </header>
 
-<div className="mb-2 text-xs text-gray-500">
-  Zdroj eventov: {srcErr ? "fallback (3)" : `DB (${events.length})`}
-</div>
-
+      {/* Debug badge – pomáha overiť, či idú dáta z DB alebo fallback */}
+      <div className="mb-2 px-4 text-xs text-gray-500">
+        Zdroj eventov: {srcErr ? "fallback (3)" : `DB (${events.length})`}
+      </div>
 
       <main className="mx-auto max-w-7xl px-4 py-6">
         <div className="mb-4 flex items-center justify-between">
@@ -261,3 +242,4 @@ export default function Home() {
     </div>
   );
 }
+EOF
