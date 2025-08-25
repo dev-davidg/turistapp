@@ -1,4 +1,3 @@
-cat > src/pages/Home.tsx << 'EOF'
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
