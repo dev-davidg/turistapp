@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, MapPin, Search, User, CheckCircle2, ChevronRight } from "lucide-react";
 import { UIButton as Button, UICard as Card, UIBadge as Badge, UITabs } from "@/ui/kit";
-import { supabase } from "@/lib/supabase";
+import { supabase, SUPABASE_DEBUG } from "@/lib/supabase";
 
 type EventRow = {
   id: string;
@@ -124,7 +124,7 @@ export default function Home() {
         .select("id,title,date,location,image,tags,spotsLeft")
         .order("date", { ascending: true })
         .limit(20);
-      if (error) setSrcErr(error.message);
+      if (error) setSrcErr(`fetch-error: ${error.message}`);
       if (!error && data && isMounted) setEvents(data as EventRow[]);
       setLoadingE(false);
     })();
@@ -185,6 +185,11 @@ export default function Home() {
       {/* Debug badge – pomáha overiť, či idú dáta z DB alebo fallback */}
       <div className="mb-2 px-4 text-xs text-gray-500">
         Zdroj eventov: {srcErr ? "fallback (3)" : `DB (${events.length})`}
+        {" · "}
+        env: {SUPABASE_DEBUG.hasUrl ? `url=${SUPABASE_DEBUG.urlHost}` : "url=missing"}
+        {" / "}
+        {SUPABASE_DEBUG.hasKey ? "key=present" : "key=missing"}
+        {srcErr ? ` · ${srcErr}` : ""}
       </div>
 
       <main className="mx-auto max-w-7xl px-4 py-6">
@@ -241,4 +246,3 @@ export default function Home() {
     </div>
   );
 }
-
