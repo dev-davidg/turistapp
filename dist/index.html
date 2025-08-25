@@ -4,11 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#059669" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <title>Turistapp UI Demo</title>
-    <script type="module" crossorigin src="/assets/index-BDadvBPU.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BmLBwxs3.css">
+    <script type="module" crossorigin src="/assets/index-C6N19K9D.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-wX3aFTci.css">
   </head>
   <body class="bg-white dark:bg-gray-950">
     <div id="root"></div>
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+
   </body>
 </html>

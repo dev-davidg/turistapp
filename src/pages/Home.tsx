@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, MapPin, Search, User, CheckCircle2, ChevronRight } from "lucide-react";
 import { UIButton as Button, UICard as Card, UIBadge as Badge, UITabs } from "@/ui/kit";
 import { supabase } from "@/lib/supabase";
+import React, { useEffect, useMemo, useState } from "react";
+
 
 type EventRow = {
   id: string;
@@ -103,6 +105,27 @@ const ChallengeCard = ({ c }: { c: ChallengeRow }) => (
   </motion.div>
 );
 
+const [srcErr, setSrcErr] = useState<string | null>(null);
+
+// EVENTS
+useEffect(() => {
+  let isMounted = true;
+  (async () => {
+    if (!supabase) { setSrcErr("no-supabase"); setLoadingE(false); return; }
+    setLoadingE(true);
+    const { data, error } = await supabase
+      .from("events")
+      .select("id,title,date,location,image,tags,spotsLeft")
+      .order("date", { ascending: true })
+      .limit(20);
+    if (error) setSrcErr(error.message);
+    if (!error && data && isMounted) setEvents(data as EventRow[]);
+    setLoadingE(false);
+  })();
+  return () => { isMounted = false; };
+}, []);
+
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"events" | "challenges">("events");
@@ -178,6 +201,11 @@ export default function Home() {
           <div className="md:hidden"><Button variant="outline" className="px-3 py-2" aria-label="Profil"><User className="h-5 w-5" /></Button></div>
         </div>
       </header>
+
+<div className="mb-2 text-xs text-gray-500">
+  Zdroj eventov: {srcErr ? "fallback (3)" : `DB (${events.length})`}
+</div>
+
 
       <main className="mx-auto max-w-7xl px-4 py-6">
         <div className="mb-4 flex items-center justify-between">
