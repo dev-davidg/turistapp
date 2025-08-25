@@ -1,22 +1,34 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, MapPin, Search, User, CheckCircle2, ChevronRight } from "lucide-react";
 import { UIButton as Button, UICard as Card, UIBadge as Badge, UITabs } from "@/ui/kit";
+import { supabase } from "@/lib/supabase";
 
-const events = [
+type EventRow = {
+  id: string;
+  title: string;
+  date: string;       // ISO
+  location: string;
+  image?: string;
+  tags?: string[];    // text[] v DB, alebo JSON
+  spotsLeft?: number;
+};
+
+const fallbackEvents: EventRow[] = [
   { id:"e1", title:"Nočná turistika na Hrebienok", date:"2025-09-12", location:"Vysoké Tatry", image:"https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format&fit=crop", tags:["Turistika","Nočný pochod"], spotsLeft:8 },
-  { id:"e2", title:"Východ slnka na Srđ", date:"2025-09-05", location:"Dubrovník", image:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop", tags:["Výhľady","Fotowalk"], spotsLeft:12 },
-  { id:"e3", title:"Beh okolo Štrbského plesa", date:"2025-09-28", location:"Vysoké Tatry", image:"https://images.unsplash.com/photo-1500043357865-c6b8827edf80?q=80&w=1200&auto=format&fit=crop", tags:["Beh","Jazero"], spotsLeft:20 },
+  { id:"e2", title:"Východ slnka na Srđ",        date:"2025-09-05", location:"Dubrovník",     image:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop", tags:["Výhľady","Fotowalk"],   spotsLeft:12 },
+  { id:"e3", title:"Beh okolo Štrbského plesa",  date:"2025-09-28", location:"Vysoké Tatry",  image:"https://images.unsplash.com/photo-1500043357865-c6b8827edf80?q=80&w=1200&auto=format&fit=crop", tags:["Beh","Jazero"],       spotsLeft:20 },
 ];
+
 const formatDateSk = (iso: string) => new Date(iso).toLocaleDateString("sk-SK", { day: "2-digit", month: "long", year: "numeric" });
 
-const EventCard = ({ e }: { e: any }) => {
+const EventCard = ({ e }: { e: EventRow }) => {
   const [joined, setJoined] = useState(false);
   return (
     <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
       <Card className="overflow-hidden">
         <div className="relative h-40 w-full">
-          <img src={e.image} alt={e.title} className="h-full w-full object-cover" />
+          {e.image ? <img src={e.image} alt={e.title} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-emerald-100" />}
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/0" />
           <div className="absolute left-3 top-3 flex items-center gap-2">
             <Badge tone="amber" className="backdrop-blur-sm">
@@ -45,10 +57,35 @@ const EventCard = ({ e }: { e: any }) => {
 export default function Home() {
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"events" | "challenges">("events");
+  const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState<EventRow[]>(fallbackEvents);
 
-  const filteredEvents = useMemo(() => {
-    return events.filter((e) => `${e.title} ${e.location} ${e.tags.join(" ")}`.toLowerCase().includes(query.toLowerCase()));
-  }, [query]);
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      if (!supabase) { setLoading(false); return; }
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("events")
+        .select("id,title,date,location,image,tags,spotsLeft")
+        .order("date", { ascending: true })
+        .limit(12);
+      if (error) {
+        console.warn("Supabase error:", error.message);
+      } else if (data && isMounted) {
+        setEvents(data as EventRow[]);
+      }
+      setLoading(false);
+    })();
+    return () => { isMounted = false; };
+  }, []);
+
+  const filtered = useMemo(() => {
+    const q = query.toLowerCase();
+    return events.filter((e) =>
+      `${e.title} ${e.location} ${(e.tags||[]).join(" ")}`.toLowerCase().includes(q)
+    );
+  }, [query, events]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-white to-white">
@@ -76,9 +113,22 @@ export default function Home() {
 
         <AnimatePresence mode="popLayout">
           <motion.div key="events" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredEvents.map((e) => (<EventCard key={e.id} e={e} />))}
-            </div>
+            {loading ? (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <Card key={i} className="h-72 animate-pulse bg-gray-100 dark:bg-gray-900" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {filtered.map((e) => (<EventCard key={e.id} e={e} />))}
+                {filtered.length === 0 && (
+                  <Card className="p-6 text-center text-sm text-gray-600 dark:text-gray-300">
+                    Žiadne eventy pre dané filtrovanie.
+                  </Card>
+                )}
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </main>
